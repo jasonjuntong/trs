@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { Button } from '@/components/ui/button'
+import useAuthStore from '@/stores/auth.ts'
+import { onMounted } from 'vue'
+
+onMounted(() => {
+  useAuthStore().listenToAuthEvents()
+})
 </script>
 
 <template>
-<!--  <RouterView />-->
-  <Button>Button</Button>
+  <RouterView />
 </template>
 
 <style scoped>
