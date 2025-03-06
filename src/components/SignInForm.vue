@@ -3,54 +3,24 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import type { AuthenticationType} from '@/models/types.ts';
-import {computed, ref} from 'vue';
-import useAuthStore from '@/stores/auth.ts'
-
-const authStore = useAuthStore()
+import { ref} from 'vue'
 
 const email = ref()
 const password = ref()
-
-const onSubmitHandler = async () => {
-  await authStore.signIn(email.value, password.value)
-}
-
-const { authenticationType } = defineProps<{ authenticationType: AuthenticationType }>();
-
-const title = computed(() => {
-  return authenticationType === 'SignIn' ? 'Welcome back' : 'Create an account'
-})
-
-const subTitle = computed(() => {
-  return authenticationType === 'SignIn' ? 'Sign-in to your TRS account' : 'Create TRS account'
-})
-
-const actionButtonName = computed(() => {
-  return authenticationType === 'SignIn' ? 'Sign In' : 'Sign Up'
-})
-
-const footerMessage = computed(() => {
-  return authenticationType === 'SignIn' ? 'Don\'t have an account? ' : 'Already have an account'
-})
-
-const footerLinkName = computed(() => {
-  return authenticationType === 'SignIn' ? 'Sign Up' : 'Sign In'
-})
 </script>
 
 <template>
   <div class="flex flex-col gap-6">
     <Card class="overflow-hidden">
       <CardContent class="grid p-0 md:grid-cols-2">
-        <form class="p-6 md:p-8" @submit.prevent @submit='onSubmitHandler'>
+        <form class="p-6 md:p-8" @submit.prevent @submit="$emit('clickSubmitAuthForm', { email, password })">
           <div class="flex flex-col gap-6">
             <div class="flex flex-col items-center text-center">
               <h1 class="text-2xl font-bold">
-                {{ title }}
+                Welcome back
               </h1>
               <p class="text-balance text-muted-foreground">
-                {{ subTitle }}
+                'Sign-in to your TRS account'
               </p>
             </div>
             <div class="grid gap-2">
@@ -76,12 +46,12 @@ const footerLinkName = computed(() => {
               <Input v-model='password' id="password" type="password" required autocomplete="off" />
             </div>
             <Button type="submit" class="w-full">
-              {{ actionButtonName }}
+              Sign-in
             </Button>
             <div class="text-center text-sm">
-              {{ footerMessage }}
-              <span class="underline underline-offset-4 cursor-pointer" @click="authStore.signOut()">
-                {{ footerLinkName }}
+              Don't have an account?
+              <span class="underline underline-offset-4 cursor-pointer" @click="$emit('clickSignUpLink')">
+                'Sign-up'
               </span>
             </div>
           </div>
@@ -99,7 +69,7 @@ const footerLinkName = computed(() => {
       </CardContent>
     </Card>
     <div class="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-      By clicking {{ actionButtonName }}, you agree to our <a href="#">Terms of Service</a>
+      By clicking Sign-in, you agree to our <a href="#">Terms of Service</a>
       and <a href="#">Privacy Policy</a>.
     </div>
   </div>

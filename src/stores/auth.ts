@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import {computed, ref, watch} from 'vue';
-import type { Session, User, AuthChangeEvent } from '@supabase/supabase-js'
+import { ref, watch } from 'vue';
+import type { Session, User } from '@supabase/supabase-js'
 import supabase from '@/providers/supabase.ts'
 import router from '@/router';
 
@@ -22,7 +22,6 @@ const useAuthStore = defineStore('auth', () => {
 
   const listenToAuthEvents = async () => {
     supabase.auth.onAuthStateChange((_event, _session) => {
-      console.log(`Auth event: ${_event}`);
       if(_event === 'SIGNED_OUT') {
         session.value = null
         user.value = null
@@ -33,21 +32,21 @@ const useAuthStore = defineStore('auth', () => {
     })
   }
 
-  const signIn = async (email: string, password: string) => {
+  const signin = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
       if(!error) {
         user.value = data.user
         session.value = data.session
       } else {
-        console.log(error)
+        console.log(`*** error: ${error}`)
       }
     } catch (error) {
       console.log(error)
     }
   }
 
-  const signUp = async (email: string, password: string) => {
+  const signup = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signUp({ email, password })
       if(!error) {
@@ -73,8 +72,8 @@ const useAuthStore = defineStore('auth', () => {
   return {
     user,
     session,
-    signIn,
-    signUp,
+    signin,
+    signup,
     signOut,
     listenToAuthEvents,
   }
